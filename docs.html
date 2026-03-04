@@ -222,6 +222,20 @@ settings:
         <li><code>questions[].answer</code> - Answer text (string)</li>
       </ul>
 
+      <h3>Code Blocks in Questions</h3>
+      <p>You can include code blocks in question and answer text using triple backtick syntax:</p>
+      <pre><code>categories:
+  - name: "Python"
+    questions:
+      - value: 200
+        question: |
+          What does this code output?
+          ```python
+          print("Hello, " + "World!")
+          ```
+        answer: "What is Hello, World!?"</code></pre>
+      <p>You can also use inline code with single backticks, for example: <code>The `len()` function returns the length</code>.</p>
+
       <h3>Optional Fields</h3>
       <ul>
         <li><code>questions[].dailyDouble</code> - Mark as Daily Double (boolean)</li>

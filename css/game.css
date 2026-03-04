@@ -178,6 +178,53 @@
   border-radius: 0.5rem;
 }
 
+/* Code blocks in questions/answers */
+.question-text.has-code,
+.answer-text.has-code,
+.fj-question .has-code,
+.fj-answer .has-code {
+  display: block;
+  text-align: left;
+}
+
+.question-text pre,
+.answer-text pre,
+.fj-question pre,
+.fj-answer pre {
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 0.375rem;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+  text-align: left;
+}
+
+.question-text code,
+.answer-text code,
+.fj-question code,
+.fj-answer code {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.85em;
+  line-height: 1.6;
+}
+
+.question-text .inline-code,
+.answer-text .inline-code,
+.fj-question .inline-code,
+.fj-answer .inline-code {
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 0.15em 0.4em;
+  border-radius: 0.25rem;
+}
+
+.answer-text pre {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.answer-text .inline-code {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
 .buzzer-section {
   text-align: center;
   margin: 2rem 0;

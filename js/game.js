@@ -1,5 +1,58 @@
 // Game board logic
 
+// Render text with code block and inline code support
+// Uses DOM APIs (textContent, createTextNode) to prevent XSS
+function renderFormattedText(element, text) {
+  element.innerHTML = '';
+  element.classList.remove('has-code');
+
+  if (!text) return;
+
+  // Split on fenced code blocks: ```lang\ncode\n```
+  const parts = text.split(/(```\w*\n[\s\S]*?```)/g);
+
+  let hasCodeBlock = false;
+
+  parts.forEach(part => {
+    if (!part) return;
+
+    const codeBlockMatch = part.match(/^```(\w*)\n?([\s\S]*?)```$/);
+    if (codeBlockMatch) {
+      hasCodeBlock = true;
+      const code = codeBlockMatch[2].replace(/\n$/, '');
+      const pre = document.createElement('pre');
+      const codeEl = document.createElement('code');
+      codeEl.textContent = code;
+      pre.appendChild(codeEl);
+      element.appendChild(pre);
+    } else {
+      // Handle inline code with single backticks
+      renderInlineText(element, part);
+    }
+  });
+
+  if (hasCodeBlock) {
+    element.classList.add('has-code');
+  }
+}
+
+// Render text with inline `code` backticks
+function renderInlineText(parent, text) {
+  const parts = text.split(/(`[^`]+`)/g);
+  parts.forEach(part => {
+    if (!part) return;
+    const inlineMatch = part.match(/^`([^`]+)`$/);
+    if (inlineMatch) {
+      const codeEl = document.createElement('code');
+      codeEl.className = 'inline-code';
+      codeEl.textContent = inlineMatch[1];
+      parent.appendChild(codeEl);
+    } else {
+      parent.appendChild(document.createTextNode(part));
+    }
+  });
+}
+
 let currentGame = null;
 let currentQuestion = null;
 let selectedTeam = null;
@@ -165,8 +218,8 @@ function openQuestion(categoryIndex, questionIndex, isAnswered = false) {
 
   document.getElementById('categoryTitle').textContent = currentQuestion.categoryName;
   document.getElementById('questionValue').textContent = `$${currentQuestion.value}`;
-  document.getElementById('questionText').textContent = currentQuestion.question;
-  document.getElementById('answerText').textContent = currentQuestion.answer;
+  renderFormattedText(document.getElementById('questionText'), currentQuestion.question);
+  renderFormattedText(document.getElementById('answerText'), currentQuestion.answer);
 
   // Reset sections
   document.getElementById('dailyDoubleScreen').style.display = 'none';
@@ -751,7 +804,7 @@ function showFJQuestionPhase() {
   const fj = currentGame.config.finalJeopardy;
   const fjState = currentGame.state.finalJeopardy;
 
-  document.getElementById('fjQuestionText').textContent = fj.question;
+  renderFormattedText(document.getElementById('fjQuestionText'), fj.question);
 
   // Show wagers summary
   const summary = document.getElementById('fjWagersSummary');
@@ -775,8 +828,8 @@ function showFJAnswerPhase() {
   const fj = currentGame.config.finalJeopardy;
   const fjState = currentGame.state.finalJeopardy;
 
-  document.getElementById('fjQuestionText2').textContent = fj.question;
-  document.getElementById('fjAnswerText').textContent = fj.answer;
+  renderFormattedText(document.getElementById('fjQuestionText2'), fj.question);
+  renderFormattedText(document.getElementById('fjAnswerText'), fj.answer);
 
   // Show scoring
   const scoringList = document.getElementById('fjScoringList');
