@@ -281,6 +281,7 @@ function createGameCard(game) {
     <div class="game-card-footer">
       <span class="game-date">Last played: ${date}</span>
       <div class="game-actions">
+        <button class="icon-btn edit" data-action="edit" title="Edit game">✏️</button>
         <button class="icon-btn delete" data-action="delete" data-game-id="${game.id}" title="Delete game">🗑️</button>
       </div>
     </div>
@@ -291,6 +292,13 @@ function createGameCard(game) {
     if (!e.target.closest('.game-actions')) {
       playGame(game.id);
     }
+  });
+
+  // Edit button
+  const editBtn = card.querySelector('[data-action="edit"]');
+  editBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    window.location.href = `builder.html?gameId=${game.id}`;
   });
 
   // Delete button

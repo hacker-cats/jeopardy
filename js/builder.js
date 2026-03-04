@@ -11,11 +11,20 @@ let gameData = {
 let currentEditCell = null;
 let numColumns = 5;
 let numRows = 5;
+let editingGameId = null;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-  initializeGrid();
   populateThemeDropdown();
+
+  const params = new URLSearchParams(window.location.search);
+  const gameId = params.get('gameId');
+  if (gameId) {
+    loadExistingGame(gameId);
+  } else {
+    initializeGrid();
+  }
+
   setupEventListeners();
 });
 
@@ -106,6 +115,91 @@ function populateThemeDropdown() {
     option.textContent = preset.name;
     select.appendChild(option);
   });
+}
+
+// Load existing game for editing
+function loadExistingGame(gameId) {
+  const game = Storage.getGame(gameId);
+  if (!game) {
+    alert('Game not found');
+    window.location.href = 'index.html';
+    return;
+  }
+
+  editingGameId = gameId;
+  const config = game.config;
+
+  // Set title
+  gameData.title = config.title || 'My Jeopardy Game';
+  document.getElementById('gameTitle').value = gameData.title;
+
+  // Load categories and questions
+  gameData.categories = [];
+  let maxRows = 0;
+
+  if (config.categories) {
+    config.categories.forEach(cat => {
+      const questions = (cat.questions || []).map((q, qIndex) => ({
+        value: q.value || (qIndex + 1) * 200,
+        question: q.question || '',
+        answer: q.answer || '',
+        summary: q.summary || '',
+        image: q.image || undefined
+      }));
+
+      // Track daily double
+      (cat.questions || []).forEach((q, qIndex) => {
+        if (q.dailyDouble) {
+          gameData.dailyDouble = { col: gameData.categories.length, row: qIndex };
+        }
+      });
+
+      gameData.categories.push({
+        name: cat.name || `Category ${gameData.categories.length + 1}`,
+        questions: questions
+      });
+
+      if (questions.length > maxRows) {
+        maxRows = questions.length;
+      }
+    });
+  }
+
+  numColumns = gameData.categories.length || 5;
+  numRows = maxRows || 5;
+
+  // Pad categories with fewer questions to match max row count
+  gameData.categories.forEach(cat => {
+    while (cat.questions.length < numRows) {
+      cat.questions.push({
+        value: (cat.questions.length + 1) * 200,
+        question: '',
+        answer: '',
+        summary: ''
+      });
+    }
+  });
+
+  // Load Final Jeopardy if present
+  if (config.finalJeopardy) {
+    document.getElementById('enableFinalJeopardy').checked = true;
+    document.getElementById('fjFields').style.display = 'block';
+    document.getElementById('fjCategoryInput').value = config.finalJeopardy.category || '';
+    document.getElementById('fjQuestionInput').value = config.finalJeopardy.question || '';
+    document.getElementById('fjAnswerInput').value = config.finalJeopardy.answer || '';
+  }
+
+  // Load theme if present
+  if (config.theme && config.theme.preset) {
+    document.getElementById('themeSelect').value = config.theme.preset;
+    ThemeManager.applyTheme(config.theme);
+  }
+
+  // Update page title and save button
+  document.querySelector('.header-left h1').textContent = 'Edit Game';
+  document.getElementById('saveGameBtn').textContent = 'Save Changes';
+
+  renderGrid();
 }
 
 // Grid manipulation
@@ -489,9 +583,14 @@ function saveGame() {
     config.theme = { preset: themeSelect };
   }
 
-  // Create and save game
-  const game = GameState.createGame(config);
-  const saved = Storage.saveGame(game);
+  // Save or update game
+  let saved;
+  if (editingGameId) {
+    saved = Storage.updateGame(editingGameId, { config: config, title: config.title });
+  } else {
+    const game = GameState.createGame(config);
+    saved = Storage.saveGame(game);
+  }
 
   if (saved) {
     alert('Game saved successfully!');

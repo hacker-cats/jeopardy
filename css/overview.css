@@ -160,6 +160,10 @@ header h1 {
   color: var(--danger-color);
 }
 
+.icon-btn.edit:hover {
+  color: var(--primary-color);
+}
+
 /* Empty state */
 .empty-state {
   text-align: center;
