@@ -157,13 +157,6 @@
   margin-bottom: 2rem;
 }
 
-.question-image img {
-  max-width: 100%;
-  max-height: 400px;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-}
-
 .question-text {
   font-size: 1.75rem;
   text-align: center;
@@ -178,7 +171,12 @@
   border-radius: 0.5rem;
 }
 
-/* Code blocks in questions/answers */
+/* Rich text (code, media, links) in questions/answers */
+.formatted-text {
+  max-width: 100%;
+  min-width: 0;
+}
+
 .question-text.has-code,
 .answer-text.has-code,
 .fj-question .has-code,
@@ -187,23 +185,36 @@
   text-align: left;
 }
 
+.question-text.has-media,
+.answer-text.has-media,
+.fj-question .has-media,
+.fj-answer .has-media {
+  display: block;
+}
+
 .question-text pre,
 .answer-text pre,
 .fj-question pre,
 .fj-answer pre {
-  background-color: rgba(0, 0, 0, 0.4);
-  border-radius: 0.375rem;
-  padding: 1rem 1.25rem;
   margin: 1rem 0;
-  overflow-x: auto;
+  border-radius: 0.375rem;
+  overflow: hidden;
   text-align: left;
+}
+
+.question-text pre code.hljs,
+.answer-text pre code.hljs,
+.fj-question pre code.hljs,
+.fj-answer pre code.hljs {
+  padding: 1rem 1.25rem;
+  white-space: pre;
 }
 
 .question-text code,
 .answer-text code,
 .fj-question code,
 .fj-answer code {
-  font-family: 'Courier New', Courier, monospace;
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', 'Courier New', monospace;
   font-size: 0.85em;
   line-height: 1.6;
 }
@@ -217,12 +228,40 @@
   border-radius: 0.25rem;
 }
 
-.answer-text pre {
+.answer-text .inline-code {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-.answer-text .inline-code {
-  background-color: rgba(0, 0, 0, 0.1);
+.rich-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  word-break: break-word;
+}
+
+.rich-link:hover {
+  color: var(--jeopardy-gold);
+}
+
+.rich-media {
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.rich-media img,
+.rich-media video {
+  max-width: 100%;
+  max-height: 400px;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.rich-media-youtube {
+  width: 100%;
+  max-width: 720px;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  border-radius: 0.5rem;
 }
 
 .buzzer-section {

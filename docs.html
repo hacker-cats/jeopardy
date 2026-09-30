@@ -235,10 +235,27 @@ settings:
           ```
         answer: "What is Hello, World!?"</code></pre>
       <p>You can also use inline code with single backticks, for example: <code>The `len()` function returns the length</code>.</p>
+      <p>Add a language after the opening backticks (<code>python</code>, <code>javascript</code>, <code>c</code>, <code>bash</code>, ...) to get syntax highlighting.</p>
+
+      <h3>Images, Videos, and Links</h3>
+      <p>Question and answer text can embed media and links using Markdown-style syntax:</p>
+      <ul>
+        <li><code>![alt text](https://example.com/cat.png)</code> - Embed an image</li>
+        <li><code>![clip](https://example.com/clip.mp4)</code> - Embed a video file (.mp4, .webm, .ogg, .mov)</li>
+        <li><code>![intro](https://www.youtube.com/watch?v=VIDEO_ID)</code> - Embed a YouTube video</li>
+        <li><code>[link text](https://example.com)</code> - Clickable link (opens in a new tab)</li>
+        <li>Bare URLs like <code>https://example.com</code> become clickable automatically</li>
+      </ul>
+      <pre><code>      - value: 400
+        question: |
+          Name this song:
+          ![clip](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
+        answer: "What is Never Gonna Give You Up? [Lyrics](https://example.com/lyrics)"</code></pre>
 
       <h3>Optional Fields</h3>
       <ul>
         <li><code>questions[].dailyDouble</code> - Mark as Daily Double (boolean)</li>
+        <li><code>questions[].image</code> - Image, video file, or YouTube URL shown above the question (string)</li>
         <li><code>settings</code> - Game settings object
           <ul>
             <li><code>pointValues</code> - Default point values (array)</li>

@@ -10,6 +10,7 @@ A fully-featured Jeopardy-style game for static deployment on GitHub Pages. No b
 - Team tracking with customizable names and colors
 - Undo/Redo functionality with full history tracking
 - Daily Double support with wager system
+- Syntax-highlighted code blocks, embedded images/videos (incl. YouTube), and clickable links in questions and answers (see docs.html)
 - Persistent game state using localStorage
 - Responsive design for mobile and desktop
 - Customizable settings (timer, sound, scoring rules)

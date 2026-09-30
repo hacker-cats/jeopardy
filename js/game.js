@@ -1,58 +1,5 @@
 // Game board logic
 
-// Render text with code block and inline code support
-// Uses DOM APIs (textContent, createTextNode) to prevent XSS
-function renderFormattedText(element, text) {
-  element.innerHTML = '';
-  element.classList.remove('has-code');
-
-  if (!text) return;
-
-  // Split on fenced code blocks: ```lang\ncode\n```
-  const parts = text.split(/(```\w*\n[\s\S]*?```)/g);
-
-  let hasCodeBlock = false;
-
-  parts.forEach(part => {
-    if (!part) return;
-
-    const codeBlockMatch = part.match(/^```(\w*)\n?([\s\S]*?)```$/);
-    if (codeBlockMatch) {
-      hasCodeBlock = true;
-      const code = codeBlockMatch[2].replace(/\n$/, '');
-      const pre = document.createElement('pre');
-      const codeEl = document.createElement('code');
-      codeEl.textContent = code;
-      pre.appendChild(codeEl);
-      element.appendChild(pre);
-    } else {
-      // Handle inline code with single backticks
-      renderInlineText(element, part);
-    }
-  });
-
-  if (hasCodeBlock) {
-    element.classList.add('has-code');
-  }
-}
-
-// Render text with inline `code` backticks
-function renderInlineText(parent, text) {
-  const parts = text.split(/(`[^`]+`)/g);
-  parts.forEach(part => {
-    if (!part) return;
-    const inlineMatch = part.match(/^`([^`]+)`$/);
-    if (inlineMatch) {
-      const codeEl = document.createElement('code');
-      codeEl.className = 'inline-code';
-      codeEl.textContent = inlineMatch[1];
-      parent.appendChild(codeEl);
-    } else {
-      parent.appendChild(document.createTextNode(part));
-    }
-  });
-}
-
 let currentGame = null;
 let currentQuestion = null;
 let selectedTeam = null;
@@ -276,11 +223,12 @@ function showDailyDouble() {
 function showQuestion(isDailyDouble = false) {
   document.getElementById('questionScreen').style.display = 'block';
 
-  // Display image if present
+  // Display image or video if present
+  // (the image field also accepts video file and YouTube URLs)
   const questionImageContainer = document.getElementById('questionImage');
-  const questionImageElement = document.getElementById('questionImageElement');
+  questionImageContainer.innerHTML = '';
   if (currentQuestion.image) {
-    questionImageElement.src = currentQuestion.image;
+    questionImageContainer.appendChild(createMediaElement(currentQuestion.image, 'Question image'));
     questionImageContainer.style.display = 'block';
   } else {
     questionImageContainer.style.display = 'none';
@@ -603,6 +551,7 @@ function openModal(modal) {
 
 function closeModal(modal) {
   modal.classList.remove('active');
+  stopMediaIn(modal);
 }
 
 // Setup event listeners

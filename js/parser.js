@@ -118,9 +118,9 @@ const Parser = {
               question.image = String(question.image);
             }
             // Basic URL validation
-            const urlPattern = /^(https?:\/\/|data:image\/)/i;
+            const urlPattern = /^(https?:\/\/|data:(image|video)\/)/i;
             if (!urlPattern.test(question.image)) {
-              warnings.push(`Category ${catIndex + 1}, Question ${qIndex + 1}: Image URL should start with http://, https://, or data:image/`);
+              warnings.push(`Category ${catIndex + 1}, Question ${qIndex + 1}: Image/video URL should start with http://, https://, data:image/, or data:video/`);
             }
           }
         });
